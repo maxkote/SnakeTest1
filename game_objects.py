@@ -19,7 +19,7 @@ class Snake:
 
     def draw(self):
         for segment in self.snake_list:
-            pg.draw.rect(self.screen, (config.PURPLE),[segment[0], segment[1], config.TILE_SIZE, config.TILE_SIZE])
+            pg.draw.rect(self.screen, config.PURPLE, [segment[0], segment[1], config.TILE_SIZE, config.TILE_SIZE])
 
     def update(self):
         self.move()
@@ -38,4 +38,4 @@ class Food:
         self.y = round(random.randrange(0, config.DIS_HEIGHT - config.TILE_SIZE) / config.TILE_SIZE) * config.TILE_SIZE
 
     def draw(self):
-        pg.draw.rect(self.screen, (config.RED), [self.x, self.y, config.TILE_SIZE, config.TILE_SIZE])
+        pg.draw.rect(self.screen, config.RED, [self.x, self.y, config.TILE_SIZE, config.TILE_SIZE])
