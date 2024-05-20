@@ -1,51 +1,50 @@
 import pygame as pg
 from game_objects import Snake, Food
+import config
+
 
 class Game:
-    def __init__(self, dis_width, dis_height, tile_size, snake_speed, green, purple, red, dark_green):
-        self.dis_width = dis_width
-        self.dis_height = dis_height
-        self.screen = pg.display.set_mode((dis_width, dis_height))
-        self.tile_size = tile_size
-        self.snake_speed = snake_speed
-        self.running = True
+    def __init__(self):
+        self.screen = pg.display.set_mode(config.SCREEN_SIZE)
         self.clock = pg.time.Clock()
-
-        self.snake = Snake(self)
-        self.food = Food(self)
-
-        self.green = green
-        self.purple = purple
-        self.red = red
-        self.dark_green = dark_green
-
+        self.init = pg.init()
+        self.caption = pg.display.set_caption('Snake')
         self.font = pg.font.SysFont("arial", 45)
+        self.running = True
+
+        self.snake = Snake(self.screen)
+        self.food = Food(self.screen)
 
     def update(self):
         self.snake.update()
         pg.display.flip()
-        self.clock.tick(self.snake_speed)
+        self.clock.tick(config.SNAKE_SPEED)
 
     def draw(self):
-        self.screen.fill((self.green))
+        self.screen.fill((config.GREEN))
         self.snake.draw()
         self.food.draw()
         self.draw_score()
         self.draw_grid()
         pg.display.flip()
 
+    def check_events(self):
+        self.check_input_events()
+        self.check_collision()
+        self.check_food_collision()
+
     def draw_score(self):
         score_text = self.font.render(f"{self.snake.length - 1}", True, (255, 255, 255))
-        self.screen.blit(score_text, [20, 15])
+        self.screen.blit(score_text, [20.5, 14.5])
 
     def draw_grid(self):
-        grid_color = (dark_green)  # Dark green color
-        for x in range(0, self.dis_width, self.tile_size):
-            pg.draw.line(self.screen, grid_color, (x, 0), (x, self.dis_height))
-        for y in range(0, self.dis_height, self.tile_size):
-            pg.draw.line(self.screen, grid_color, (0, y), (self.dis_width, y))
+        for x in range(0, config.DIS_WIDTH, config.TILE_SIZE):
+            pg.draw.line(self.screen, config.DARK_GREEN, (x, 0), (x, config.DIS_HEIGHT))
+        for y in range(0, config.DIS_HEIGHT, config.TILE_SIZE):
+            pg.draw.line(self.screen, config.DARK_GREEN, (0, y), (config.DIS_WIDTH, y))
+
     def check_collision(self):
-        if self.snake.x >= self.dis_width or self.snake.x < 0 or self.snake.y >= self.dis_height or self.snake.y < 0:
+        if self.snake.x >= config.DIS_WIDTH or self.snake.x < 0 or self.snake.y >= config.DIS_HEIGHT or self.snake.y < 0:
             self.running = False
 
         for segment in self.snake.snake_list[:-1]:
@@ -64,28 +63,22 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_q:
                     self.running = False
-                if event.key == pg.K_LEFT and self.snake.x_change == 0:
-                    self.snake.x_change = -self.tile_size
+                if (event.key == pg.K_LEFT or event.key == pg.K_a) and self.snake.x_change == 0:
+                    self.snake.x_change = -config.TILE_SIZE
                     self.snake.y_change = 0
-                elif event.key == pg.K_RIGHT and self.snake.x_change == 0:
-                    self.snake.x_change = self.tile_size
+                elif (event.key == pg.K_RIGHT or event.key == pg.K_d) and self.snake.x_change == 0:
+                    self.snake.x_change = config.TILE_SIZE
                     self.snake.y_change = 0
-                elif event.key == pg.K_UP and self.snake.y_change == 0:
-                    self.snake.y_change = -self.tile_size
+                elif (event.key == pg.K_UP or event.key == pg.K_w)and self.snake.y_change == 0:
+                    self.snake.y_change = -config.TILE_SIZE
                     self.snake.x_change = 0
-                elif event.key == pg.K_DOWN and self.snake.y_change == 0:
-                    self.snake.y_change = self.tile_size
+                elif (event.key == pg.K_DOWN or event.key == pg.K_s) and self.snake.y_change == 0:
+                    self.snake.y_change = config.TILE_SIZE
                     self.snake.x_change = 0
 
     def run(self):
-
-        pg.display.set_caption('Snake')
         while self.running:
-
-            self.check_input_events()
-            self.check_collision()
-            self.check_food_collision()
-
+            self.check_events()
             self.update()
             self.draw()
 

@@ -1,11 +1,13 @@
 import pygame as pg
 import random
+import config
+
 
 class Snake:
-    def __init__(self, game):
-        self.game = game
-        self.x = game.dis_width / 2
-        self.y = game.dis_height / 2
+    def __init__(self, screen):
+        self.screen = screen
+        self.x = config.DIS_WIDTH / 2
+        self.y = config.DIS_HEIGHT / 2
         self.x_change = 0
         self.y_change = 0
         self.snake_list = []
@@ -17,7 +19,7 @@ class Snake:
 
     def draw(self):
         for segment in self.snake_list:
-            pg.draw.rect(self.game.screen, (self.game.purple),[segment[0], segment[1], self.game.tile_size, self.game.tile_size])
+            pg.draw.rect(self.screen, (config.PURPLE),[segment[0], segment[1], config.TILE_SIZE, config.TILE_SIZE])
 
     def update(self):
         self.move()
@@ -25,13 +27,15 @@ class Snake:
         if len(self.snake_list) > self.length:
             del self.snake_list[0]
 
+
 class Food:
-    def __init__(self, game):
-        self.game = game
+    def __init__(self, screen):
+        self.screen = screen
         self.respawn()
 
     def respawn(self):
-        self.x = round(random.randrange(0, self.game.dis_width - self.game.tile_size) / self.game.tile_size) * self.game.tile_size
-        self.y = round(random.randrange(0, self.game.dis_height - self.game.tile_size) / self.game.tile_size) * self.game.tile_size
+        self.x = round(random.randrange(0, config.DIS_WIDTH - config.TILE_SIZE) / config.TILE_SIZE) * config.TILE_SIZE
+        self.y = round(random.randrange(0, config.DIS_HEIGHT - config.TILE_SIZE) / config.TILE_SIZE) * config.TILE_SIZE
+
     def draw(self):
-        pg.draw.rect(self.game.screen, (self.game.red), [self.x, self.y, self.game.tile_size, self.game.tile_size])
+        pg.draw.rect(self.screen, (config.RED), [self.x, self.y, config.TILE_SIZE, config.TILE_SIZE])
